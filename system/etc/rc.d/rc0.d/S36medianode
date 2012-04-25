@@ -1,0 +1,31 @@
+#!/bin/sh
+################################################################################
+#                                                                              #
+# Copyright c 2009  WonderMedia Technologies, Inc.   All Rights Reserved.      #
+#                                                                              #
+# This PROPRIETARY SOFTWARE is the property of WonderMedia Technologies, Inc.  #
+# and may contain trade secrets and/or other confidential information of       #
+# WonderMedia Technologies, Inc. This file shall not be disclosed to any third #
+# party, in whole or in part, without prior written consent of WonderMedia.    #
+#                                                                              #
+# THIS PROPRIETARY SOFTWARE AND ANY RELATED DOCUMENTATION ARE PROVIDED AS IS,  #
+# WITH ALL FAULTS, AND WITHOUT WARRANTY OF ANY KIND EITHER EXPRESS OR IMPLIED, #
+# AND WonderMedia TECHNOLOGIES, INC. DISCLAIMS ALL EXPRESS OR IMPLIED          #
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET       #
+# ENJOYMENT OR NON-INFRINGEMENT.                                               #
+#                                                                              #
+################################################################################
+mknod /dev/video0 c 81 0
+mknod /dev/mbdev c 242 0
+mknod /dev/wmt-lock c 242 1
+mknod /dev/fb0 c 29 0
+mknod /dev/fb1 c 29 1
+mknod /dev/jdec c 236 1
+mknod /dev/mpeg12 c 236 2
+mknod /dev/mpeg4 c 236 3
+mknod /dev/divx c 236 4
+mknod /dev/h264 c 236 5
+mknod /dev/wmt-vd c 236 0
+mknod /dev/jenc c 236 17
+mknod /dev/dsp-copybit c 236 8
+

@@ -1,0 +1,13 @@
+#!/system/bin/sh
+/system/bin/ppp3g	\
+unit 5			\
+/dev/ttyUSB2		\
+115200			\
+debug			\
+noauth			\
+user USER			\
+password PASSWD		\
+defaultroute		\
+noipdefault		\
+usepeerdns		\
+connect '/system/bin/chat3g -v -f /data/wmtpref/etc/ppp/chat.conf'

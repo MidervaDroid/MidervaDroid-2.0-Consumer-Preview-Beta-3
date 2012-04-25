@@ -1,0 +1,13 @@
+######################################3
+huawei E173s
+
+DefaultVendor= 0x12d1
+DefaultProduct= 0x1c0b
+
+TargetVendor= 0x12d1
+TargetProduct= 0x1c05
+
+CheckSuccess=20
+
+MessageEndpoint= 0x0f
+MessageContent= "55534243123456780000000000000011062000000100000000000000000000"

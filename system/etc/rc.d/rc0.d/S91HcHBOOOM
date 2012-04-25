@@ -1,0 +1,5 @@
+# HcH'z BOOOM (Boosted Optimized Out-Of-Memory)
+write /proc/sys/vm/oom_kill_allocating_task 0
+write /proc/sys/vm/panic_on_oom 0
+write /proc/sys/kernel/panic_on_oops 1
+write /proc/sys/kernel/panic 0

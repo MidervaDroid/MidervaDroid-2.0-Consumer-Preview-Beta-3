@@ -1,0 +1,13 @@
+#!/system/bin/sh
+/system/bin/ppp3g	\
+unit 5			\
+/dev/ttyACM0	\
+460800			\
+logfile /data/ppplog 0.0.0.0:0.0.0.0			\
+user USER			\
+password PASSWD		\
+noipdefault	\
+netmask 255.255.255.0	\
+defaultroute		\
+usepeerdns		\
+connect '/system/bin/chat3g -v -f /data/wmtpref/etc/ppp/chat.conf'

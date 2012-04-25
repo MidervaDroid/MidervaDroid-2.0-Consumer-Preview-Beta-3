@@ -1,0 +1,13 @@
+/system/bin/pppd	\
+/dev/VIAUSBModem0	\
+115200			\
+crtscts			\
+debug			\
+nodetach		\
+ipcp-accept-local	\
+ipcp-accept-remote	\
+defaultroute		\
+user card		\
+logfile /ppp.log	\
+usepeerdns		\
+connect '/system/bin/chat -v -f /etc/ppp/chat_DeviceVIA.conf'

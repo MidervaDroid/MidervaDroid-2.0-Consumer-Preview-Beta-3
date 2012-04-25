@@ -1,0 +1,30 @@
+#!/system/bin/sh
+DEVICE=$1
+NUMBER=$2
+USER=$3
+PASSWD=$4
+APN=$5
+	echo "i am usb modem dialer"
+	echo $1
+	echo "\"$USER\" * \"$PASSWD\"">/data/wmtpref/etc/ppp/pap-secrets
+	echo "\"$USER\" * \"$PASSWD\"">/data/wmtpref/etc/ppp/chap-secrets
+
+	case "$DEVICE" in
+DeviceHW_E220|DeviceVIA|DeviceDATANG|DeviceALCATEL)
+	echo $DEVICE
+	cp /system/etc/ppp/chat_$DEVICE.conf  /data/wmtpref/etc/ppp/chat.conf
+	cp /system/etc/ppp/$DEVICE.dia  /data/wmtpref/etc/ppp/dialer
+	/system/bin/prepare_other_3g
+	sed s/TELENUMBER/$NUMBER/ /data/wmtpref/etc/ppp/chat.conf >/data/wmtpref/etc/ppp/chat_tmp
+	sed s/APN/$APN/ /data/wmtpref/etc/ppp/chat_tmp >/data/wmtpref/etc/ppp/chat.conf
+	
+	sed s/USER/$USER/ /data/wmtpref/etc/ppp/dialer >/data/wmtpref/etc/ppp/dialer_tmp
+	sed s/PASSWD/$PASSWD/ /data/wmtpref/etc/ppp/dialer_tmp >/data/wmtpref/etc/ppp/dialer
+	/data/wmtpref/etc/ppp/dialer
+    ;;
+
+RELEASE)
+
+    ;;
+esac
+

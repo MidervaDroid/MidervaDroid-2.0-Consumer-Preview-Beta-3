@@ -1,0 +1,86 @@
+# begin identification properties
+# using some Droid settings
+ro.build.id=FRG83D_v2.2 Android Froyo
+ro.build.display.id=Touchwiz 4.5 UX for Wondermedia 2.2
+ro.build.version.incremental=75603_v2.2 Android Froyo
+ro.build.version.sdk=8
+ro.build.version.codename=REL
+ro.build.version.release=v2.2
+ro.build.date=Wed Sept 28 2011
+ro.build.type=user
+ro.build.user=android-build
+ro.build.tags=release-keys
+ro.product.model=Polaroid MPC700G
+ro.product.brand=verizon
+ro.product.name=voles
+ro.product.device=sholes
+ro.product.board=sholes
+ro.product.cpu.abi=armeabi
+ro.product.manufacturer=WonderMedia
+ro.product.locale.language=en
+ro.product.locale.region=
+ro.wifi.channels=14
+ro.board.platform=omap3
+# Do not try to parse ro.build.description or .fingerprint
+ro.build.description=voles-user 2.2.1 FRG83D 75603 release-keys
+ro.build.fingerprint=verizon/voles/sholes/sholes:2.2.1/FRG83D/75603:user/release-keys
+# end identification properties
+#
+# RIL properties
+#ril.work=1
+ril.libpath=/system/lib/libreference-ril.so
+ril.libargs=-d /dev/pts/0
+wifi.interface=ra0
+#
+# Time between wifi access point scans (higher minimizes battery drain)
+#5 minutes=60seconds x5=300, increase as needed
+wifi.supplicant_scan_interval=300
+#
+# Graphics properties
+debug.sf.hw=1 #Lets GPU try to handle UI - 0=CPU, 1=GPU
+ro.opengles.version=131072 #States we're running OpenGLES 2.0 (we're not though!)
+#
+# Max events UI can handle in 1s (max 300) - higher MAY improve scrolling
+windowsmgr.max_events_per_sec=75
+#
+# Set Dalvik properties
+dalvik.vm.stack-trace-file=/data/anr/traces.txtdalvik.vm.dexopt-flags=m=y
+dalvik.vm.heapsize=40m
+dalvik.vm.execution-mode=int:fast
+dalvik.vm.lockprof.threshold=500
+ro.kernel.android.checkjni=0
+#
+# Increase touch responsiveness (allegedly )
+debug.performance.tuning=1
+video.accelerate.hw=1
+#
+# TCP optimizing settings
+net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960
+net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960
+net.tcp.buffersize.umts=4096,87380,256960,4096,16384,256960
+net.tcp.buffersize.gprs=4096,87380,256960,4096,16384,256960
+net.tcp.buffersize.edge=4096,87380,256960,4096,16384,256960
+#
+# Additional build properties
+ro.url.legal=http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html
+ro.url.legal.android_privacy=http://www.google.com/intl/%s/mobile/android/basic/privacy.html
+ro.com.google.clientid=android-motorola
+ro.com.google.clientidbase=android-motorola
+ro.com.android.wifi-watchlist=GoogleGuest
+ro.error.receiver.system.apps=com.google.android.feedback
+ro.setupwizard.mode=DISABLED
+ro.setupwizard.enterprise_mode=1
+ro.config.notification_sound=DontPanic.ogg
+ro.config.alarm_alert=Alarm_Classic.ogg
+media.stagefright.enable-player=true
+media.stagefright.enable-meta=true
+media.stagefright.enable-scan=true
+media.stagefright.enable-http=true
+net.bt.name=Android
+#
+# Disable the zygote loader
+ro.wmt.blcr.enable=0
+#
+# Default LCD Density
+ro.sf.lcd_density=160
+

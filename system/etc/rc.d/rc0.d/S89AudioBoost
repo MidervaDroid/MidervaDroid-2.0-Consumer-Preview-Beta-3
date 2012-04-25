@@ -1,0 +1,4 @@
+#HcH'z WM8650 Audio Boost
+alsa_amixer sset 'Playback Boost' 2
+alsa_amixer sset 'Capture Boost' 3
+

@@ -1,0 +1,10 @@
+# HcH'z WM8650 Root
+#chown root:root /bin/su
+chown root:root /su
+chown root:root /sbin/su
+chown root:root /system/xbin/su
+chown root:root /system/bin/su
+#chmod 6755 /bin/su
+chmod 6755 /sbin/su
+chmod 6755 /system/xbin/su
+chmod 6755 /system/bin/su

@@ -1,0 +1,5 @@
+#Set swappiness to 0 and the Kernel starts swapping only when absolutely needed.
+#Set swappiness anywhere between 0-100 to control the amount of swapping.
+#Set swappiness to 100 and the Kernel will preemtivelyswap out memory you are not using.
+echo "0" > /proc/sys/vm/swappiness
+

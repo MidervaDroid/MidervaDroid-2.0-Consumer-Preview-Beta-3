@@ -1,0 +1,5 @@
+# HcH'z Memory Boosts
+echo "1536,2048,6144,7680,10240,12800" > /sys/module/lowmemorykiller/parameters/minfree
+echo "8192" > /proc/sys/vm/min_free_kbytes
+echo "0,4,6,8,14,15" > /sys/module/lowmemorykiller/parameters/adj
+

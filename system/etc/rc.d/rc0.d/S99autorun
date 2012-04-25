@@ -1,0 +1,102 @@
+#!/bin/sh
+################################################################################
+#                                                                              #
+# Copyright c 2009  WonderMedia Technologies, Inc.   All Rights Reserved.      #
+#                                                                              #
+# This PROPRIETARY SOFTWARE is the property of WonderMedia Technologies, Inc.  #
+# and may contain trade secrets and/or other confidential information of       #
+# WonderMedia Technologies, Inc. This file shall not be disclosed to any third #
+# party, in whole or in part, without prior written consent of WonderMedia.    #
+#                                                                              #
+# THIS PROPRIETARY SOFTWARE AND ANY RELATED DOCUMENTATION ARE PROVIDED AS IS,  #
+# WITH ALL FAULTS, AND WITHOUT WARRANTY OF ANY KIND EITHER EXPRESS OR IMPLIED, #
+# AND WonderMedia TECHNOLOGIES, INC. DISCLAIMS ALL EXPRESS OR IMPLIED          #
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET       #
+# ENJOYMENT OR NON-INFRINGEMENT.                                               #
+#                                                                              #
+################################################################################
+# Program:
+#   Use to run autorun.sh from storage device like USB, SD/MMC ...
+#
+    sleep 5s
+    pathset="                   \
+        /mnt/sda1               \
+        /mnt/sdb1               \
+        /mnt/sdc1               \
+        /mnt/sdd1               \
+        /mnt/mmcblk0p1          \
+        /mnt/mmc0blk0p1         \
+        /mnt/mmc1blk0p1         \
+        /mnt/xdblk0p1           \
+        /mnt/mspblk0p1          \
+        /mnt/sda1/FirmwareInstall               \
+        /mnt/sdb1/FirmwareInstall               \
+        /mnt/sdc1/FirmwareInstall               \
+        /mnt/sdd1/FirmwareInstall               \
+        /mnt/mmcblk0p1/FirmwareInstall          \
+        /mnt/mmc0blk0p1/FirmwareInstall         \
+        /mnt/mmc1blk0p1/FirmwareInstall         \
+        /mnt/xdblk0p1/FirmwareInstall           \
+        /mnt/mspblk0p1/FirmwareInstall          \
+        /mnt/usb/sda1           \
+        /mnt/usb/sdb1           \
+        /mnt/usb/sdc1           \
+        /mnt/usb/sdd1           \
+        /mnt/mmc/mmcblk0p1      \
+        /mnt/mmc/mmc0blk0p1     \
+        /mnt/mmc/mmc1blk0p1     \
+        /mnt/mmc/xdblk0p1       \
+        /mnt/mmc/mspblk0p1      \
+        /mnt/usb/sda1/FirmwareInstall           \
+        /mnt/usb/sdb1/FirmwareInstall           \
+        /mnt/usb/sdc1/FirmwareInstall           \
+        /mnt/usb/sdd1/FirmwareInstall           \
+        /mnt/mmc/mmcblk0p1/FirmwareInstall      \
+        /mnt/mmc/mmc0blk0p1/FirmwareInstall     \
+        /mnt/mmc/mmc1blk0p1/FirmwareInstall     \
+        /mnt/mmc/xdblk0p1/FirmwareInstall       \
+        /mnt/mmc/mspblk0p1/FirmwareInstall      \
+        /mnt/sda               \
+        /mnt/sdb               \
+        /mnt/sdc               \
+        /mnt/sdd               \
+        /mnt/mmcblk0            \
+        /mnt/mmc0blk0         \
+        /mnt/mmc1blk0         \
+        /mnt/xdblk0           \
+        /mnt/mspblk0          \
+        /mnt/sda/FirmwareInstall            \
+        /mnt/sdb/FirmwareInstall               \
+        /mnt/sdc/FirmwareInstall               \
+        /mnt/sdd/FirmwareInstall               \
+        /mnt/mmcblk0/FirmwareInstall        \
+        /mnt/mmc0blk0/FirmwareInstall         \
+        /mnt/mmc1blk0/FirmwareInstall         \
+        /mnt/xdblk0/FirmwareInstall           \
+        /mnt/mspblk0/FirmwareInstall          \
+        /mnt/usb/sda           \
+        /mnt/usb/sdb           \
+        /mnt/usb/sdc           \
+        /mnt/usb/sdd           \
+        /mnt/mmc/mmcblk0      \
+        /mnt/mmc/mmc0blk0     \
+        /mnt/mmc/mmc1blk0     \
+        /mnt/mmc/xdblk0       \
+        /mnt/mmc/mspblk0      \
+        /mnt/usb/sda/FirmwareInstall        \
+        /mnt/usb/sdb/FirmwareInstall           \
+        /mnt/usb/sdc/FirmwareInstall           \
+        /mnt/usb/sdd/FirmwareInstall           \
+        /mnt/mmc/mmcblk0/FirmwareInstall      \
+        /mnt/mmc/mmc0blk0/FirmwareInstall     \
+        /mnt/mmc/mmc1blk0/FirmwareInstall     \
+        /mnt/mmc/xdblk0/FirmwareInstall       \
+        /mnt/mmc/mspblk0/FirmwareInstall        \
+        "
+    for location in $pathset
+    do
+        if [ -e $location/autorun.sh ]; then
+            sh $location/autorun.sh $location
+            break
+        fi
+    done

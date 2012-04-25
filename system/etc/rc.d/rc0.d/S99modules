@@ -1,0 +1,174 @@
+#!/bin/sh
+################################################################################
+#                                                                              #
+# Copyright c 2009  WonderMedia Technologies, Inc.   All Rights Reserved.      #
+#                                                                              #
+# This PROPRIETARY SOFTWARE is the property of WonderMedia Technologies, Inc.  #
+# and may contain trade secrets and/or other confidential information of       #
+# WonderMedia Technologies, Inc. This file shall not be disclosed to any third #
+# party, in whole or in part, without prior written consent of WonderMedia.    #
+#                                                                              #
+# THIS PROPRIETARY SOFTWARE AND ANY RELATED DOCUMENTATION ARE PROVIDED AS IS,  #
+# WITH ALL FAULTS, AND WITHOUT WARRANTY OF ANY KIND EITHER EXPRESS OR IMPLIED, #
+# AND WonderMedia TECHNOLOGIES, INC. DISCLAIMS ALL EXPRESS OR IMPLIED          #
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET       #
+# ENJOYMENT OR NON-INFRINGEMENT.                                               #
+#                                                                              #
+################################################################################
+  
+#  (module, device)
+
+LOG="/S40modules.log"
+
+#used for function return value
+func_ret=""
+
+#probe_device(module, device_file)
+probe_device() {
+    insmod $1 2>>$LOG
+    
+#    echo "arg1:" $1 "arg2:" $2
+
+    #try few times 
+    local i=0
+    while [ $i -lt 10 ]; do
+        sleep 0.1
+        if grep $2  /proc/devices; then
+           func_ret="true"
+           echo "found " $1 "OK when i = " $i >>$LOG
+           return
+        fi
+        let i=i+1
+    done
+    echo "insmod " $1 " can not find " $2 $i >> $LOG
+    func_ret="false"
+}
+
+MODULE_PATH="/lib/modules/2.6.32.9-default"
+NODE_NAME7660="mma7660"
+NODE_NAME6225="mxc622x"
+
+######################### insmod battery driver ##############################
+    insmod $MODULE_PATH/wmt_battery_md.ko
+
+####################### insmod ts driver ##########################
+    insmod $MODULE_PATH/ts_ssd2531.ko
+    insmod $MODULE_PATH/ts_it7260.ko
+    insmod $MODULE_PATH/ts_pixcir_m48.ko
+    insmod $MODULE_PATH/ts_tm1930.ko
+    insmod $MODULE_PATH/ts_ht70009s.ko
+
+####################### insmod gsensor driver ############################    
+if [ ! -f /system/lib/hw/sensors.wmt.so ]; then
+    echo "=====Probe Sensor Start=====" > $LOG
+    sensor_ready="false"
+    if [ -f /system/lib/hw/sensor.memsic6225.so ]; then
+		# proba this modules is exist or not
+        probe_device $MODULE_PATH"/gsensor_mxc622x_md.ko" $NODE_NAME6225
+        echo func_ret = $func_ret
+        if [ $func_ret == "true" ]; then
+            insmod $MODULE_PATH"/gsensor_mecs_md.ko"
+            chmod 666 /dev/ecompass_ctrl
+            chmod 666 /dev/mxc622x
+            mv /system/lib/hw/sensor.memsic6225.so /system/lib/hw/sensors.wmt.so >> $LOG
+
+            sensor_ready="true"
+            
+        fi
+    fi
+
+    if [ $sensor_ready == "false" ]; then
+        insmod $MODULE_PATH/gsensor_dmard06_md.ko
+        if [ -d /sys/class/dmard06 ]; then
+            mv /system/lib/hw/sensor.dmard06.so /system/lib/hw/sensors.wmt.so >> $LOG
+        else
+            #fallback to freescale sensor
+            mv /system/lib/hw/sensor.mma7660.so /system/lib/hw/sensors.wmt.so >> $LOG
+        fi        
+    fi
+fi
+
+# to check if sensor.wmt.so is xxx
+if grep MXC622X /system/lib/hw/sensors.wmt.so; then
+      insmod $MODULE_PATH"/gsensor_mxc622x_md.ko" 2>>$LOG
+      insmod $MODULE_PATH"/gsensor_mecs_md.ko"
+      #setprop ctl.start memsicd
+      /system/bin/memsicd &
+else
+    if grep DMARD06 /system/lib/hw/sensors.wmt.so; then
+        insmod $MODULE_PATH/gsensor_dmard06_md.ko
+    else
+        insmod $MODULE_PATH"/gsensor_mma7660_md.ko" 2>>$LOG
+    fi
+fi
+
+######################### insmod kpad driver #################################
+   insmod $MODULE_PATH/kpad.ko
+    
+######################### insmod usb net ##############################
+   insmod $MODULE_PATH/usbnet.ko   
+   insmod $MODULE_PATH/sr9700.ko 
+   insmod $MODULE_PATH/dm9601.ko 
+#########################wifi device detect###################################
+ar9271_depend_insmod() { 
+        insmod $MODULE_PATH/compat.ko
+        insmod $MODULE_PATH/compat_firmware_class.ko
+        insmod $MODULE_PATH/cfg80211.ko
+        insmod $MODULE_PATH/mac80211.ko
+        insmod $MODULE_PATH/ath.ko
+        insmod $MODULE_PATH/ath9k_hw.ko
+        insmod $MODULE_PATH/ath9k_common.ko        
+}
+ar9271_depend_rmmod() { 
+        rmmod ath9k_common
+        rmmod ath9k_hw
+        rmmod ath
+        rmmod mac80211
+        rmmod cfg80211
+        rmmod compat_firmware_class
+        rmmod compat
+}
+wifi_configed="/data/wmtpref/wifi_configed"
+wifi_drivers="rt3070sta_ar9271.ko rt3070sta_rtl8188.ko rt3070sta_rt5370.ko rt3070sta_rt3070.ko"
+if [ -f "$wifi_configed" ]
+then
+        echo "wifi driver have configured"
+        wifi_driver_name=`cat $wifi_configed`  
+        if [ "$wifi_driver_name" == "rt3070sta_ar9271.ko" ] 
+        then
+                ar9271_depend_insmod
+        fi
+        return
+fi
+
+for wifi_driver in $wifi_drivers
+do
+        echo "detect $wifi_driver"
+        if [ "$wifi_driver" == "rt3070sta_ar9271.ko" ]
+        then
+                ar9271_depend_insmod
+        fi
+        insmod $MODULE_PATH/$wifi_driver
+        sleep 1
+        rmmod rt3070sta
+        wifi_name=`cat /proc/wifi_config`  
+        echo "wifi_name:$wifi_name wifi driver $wifi_driver"
+        if [ "$wifi_name" == "$wifi_driver" ]                                           
+        then                                                                       
+                echo "=================================>find $wifi_driver"
+                cp $MODULE_PATH/$wifi_driver $MODULE_PATH/rt3070sta.ko
+                touch "$wifi_configed"
+                echo "$wifi_driver">"$wifi_configed"
+        fi   
+        if [ "$wifi_driver" == "rt3070sta_ar9271.ko" ]
+        then
+                if [ "$wifi_name" != "rt3070sta_ar9271.ko" ]
+                 then
+                        ar9271_depend_rmmod
+                fi
+        fi
+done
+#########################wifi device detect end###################################
+
+######################### USB to UART Bridge###################################
+    insmod $MODULE_PATH/cp210x.ko

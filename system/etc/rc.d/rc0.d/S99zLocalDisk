@@ -1,0 +1,70 @@
+#!/bin/sh
+################################################################################
+#                                                                              #
+# Copyright c 2009  WonderMedia Technologies, Inc.   All Rights Reserved.      #
+#                                                                              #
+# This PROPRIETARY SOFTWARE is the property of WonderMedia Technologies, Inc.  #
+# and may contain trade secrets and/or other confidential information of       #
+# WonderMedia Technologies, Inc. This file shall not be disclosed to any third #
+# party, in whole or in part, without prior written consent of WonderMedia.    #
+#                                                                              #
+# THIS PROPRIETARY SOFTWARE AND ANY RELATED DOCUMENTATION ARE PROVIDED AS IS,  #
+# WITH ALL FAULTS, AND WITHOUT WARRANTY OF ANY KIND EITHER EXPRESS OR IMPLIED, #
+# AND WonderMedia TECHNOLOGIES, INC. DISCLAIMS ALL EXPRESS OR IMPLIED          #
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, QUIET       #
+# ENJOYMENT OR NON-INFRINGEMENT.                                               #
+#                                                                              #
+################################################################################
+
+get_mtd ()
+{
+	desc=`echo $1 | sed 's/\ /\\\ /g'`
+	cat /proc/mtd | grep "$desc" | cut -d: -f1 | sed 's/mtd/\/dev\/block\/mtd/g'
+}
+
+get_mtdblock ()
+{
+	get_mtd "$1" | sed 's/mtd/mtdblock/g'
+}
+
+get_mtdblock_len ()
+{
+	tmp=`cat /proc/mtd |grep "$1"|cut -d\  -f 2`
+	len=`printf "0x%x" 0x$tmp`
+		
+	echo $len
+}
+
+root_dev=`wmtenv get rootdev`
+echo "[WMT] root_dev = $root_dev"
+max_size=8589934592 
+user_data=/LocalDisk
+/bin/mkdir -p ${user_data}
+
+if [ "$root_dev" == "NAND" ] || [ "$root_dev" == "" ]; then
+	echo "[WMT] local device is Nand-Flash"
+	localdisk_size=`get_mtdblock_len "LocalDisk"`
+        if [ $((localdisk_size)) -gt $((max_size)) ]; then                      
+        	mtdblock=`get_mtdblock "LocalDisk"`                    
+        	mount -t yaffs2 -o rw ${mtdblock} ${user_data}                  
+		chmod 777 /LocalDisk
+	else 
+		mtdblock=`get_mtdblock "LocalDisk"`
+		udc_dir=/mnt/localdisk
+		udc_file=${udc_dir}/backfile.vfat
+		udc_loop_dev=/dev/block/loop0
+	
+		/bin/mkdir -p ${udc_dir}
+		/bin/mount -t yaffs2 -o rw ${mtdblock} ${udc_dir}
+		losetup ${udc_loop_dev} ${udc_file}
+		/bin/mount -t vfat -o utf8 ${udc_loop_dev} ${user_data}
+	fi
+elif [ "$root_dev" == "TF" ]; then
+	echo "[WMT] local device is TF card"
+	/bin/mount -t vfat -o utf8 /dev/block/mmc1blk0p7 ${user_data}
+else
+	echo "[WMT] Mount LocalDisk, unknown root device"
+fi
+# Only after The LocalDisk has been mounted we can start wmtserver
+# add "setprop ctl.start wmtserver" from S98service
+setprop ctl.start wmtserver

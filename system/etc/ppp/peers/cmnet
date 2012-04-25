@@ -1,0 +1,18 @@
+receive-all
+/dev/pts/1
+460800
+nocrtscts
+nocdtrcts
+local
+usepeerdns
+defaultroute
+noipdefault
+ipcp-accept-local
+ipcp-accept-remote
+novj
+novjccomp
+user cmnet
+password cmnet
+unit 2
+nodetach
+connect "/system/bin/chat -v -t 50 -f /data/ppp/gprs-isp-fake"

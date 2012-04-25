@@ -1,0 +1,16 @@
+#!/system/bin/sh
+/system/bin/ppp3g	\
+unit 5			\
+/dev/VIAUSBModem0	\
+115200			\
+crtscts			\
+debug			\
+nodetach		\
+ipcp-accept-local	\
+ipcp-accept-remote	\
+defaultroute		\
+user USER			\
+password PASSWD		\
+logfile /ppp.log	\
+usepeerdns		\
+connect '/system/bin/chat3g -v -f /data/wmtpref/etc/ppp/chat.conf'
